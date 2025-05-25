@@ -27,6 +27,7 @@
       margin: 0 15px;
       text-decoration: none;
       font-weight: bold;
+      user-select: none;
     }
 
     h1 {
@@ -47,11 +48,13 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      user-select: none;
     }
 
     canvas {
       background: #2a2a2a;
       box-shadow: 0 0 10px #000;
+      user-select: none;
     }
   </style>
 </head>
@@ -61,7 +64,7 @@
     <a href="shop.html">Shop</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
-    <a href="game.html">Game</a>
+    <a href="games.html">Games</a>
   </nav>
 
   <h1>Dragon Snake</h1>
@@ -76,10 +79,6 @@
     let score = 0;
     let game;
     let direction;
-
-    let dragonHead = new Image();
-    dragonHead.src = 'Dragonhead.png';
-
     let snake = [];
     let food = {};
 
@@ -89,6 +88,8 @@
       else if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
       else if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
     });
+
+    document.getElementById('start-btn').addEventListener('click', startGame);
 
     function startGame() {
       score = 0;
@@ -103,20 +104,30 @@
       game = setInterval(draw, 150);
     }
 
-    document.getElementById('start-btn').addEventListener('click', startGame);
-
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let i = 0; i < snake.length; i++) {
-        if (i === 0 && dragonHead.complete && dragonHead.naturalHeight !== 0) {
-          ctx.drawImage(dragonHead, snake[i].x, snake[i].y, box, box);
+        if (i === 0) {
+          // Draw dragon head
+          ctx.fillStyle = 'green';
+          ctx.fillRect(snake[i].x, snake[i].y, box, box);
+
+          // Red horns
+          ctx.fillStyle = 'red';
+          ctx.fillRect(snake[i].x + 2, snake[i].y + 2, 4, 4);
+          ctx.fillRect(snake[i].x + box - 6, snake[i].y + 2, 4, 4);
+
+          // Orange/Brown hair
+          ctx.fillStyle = '#cc6600';
+          ctx.fillRect(snake[i].x + 6, snake[i].y + 6, 8, 8);
         } else {
           ctx.fillStyle = 'green';
           ctx.fillRect(snake[i].x, snake[i].y, box, box);
         }
       }
 
+      // Draw food
       ctx.fillStyle = 'red';
       ctx.fillRect(food.x, food.y, box, box);
 
@@ -139,10 +150,7 @@
         snake.pop();
       }
 
-      let newHead = {
-        x: headX,
-        y: headY
-      };
+      let newHead = { x: headX, y: headY };
 
       if (headX < 0 || headY < 0 || headX >= canvas.width || headY >= canvas.height || collision(newHead, snake)) {
         clearInterval(game);
@@ -161,4 +169,5 @@
   </script>
 </body>
 </html>
+
 
